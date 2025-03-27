@@ -2,6 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/20 dark:bg-primary-dark/20 text-text-main dark:text-text-main-dark;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral dark:bg-neutral-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 dark:bg-primary-dark/20 rounded-full hover:bg-primary/30 dark:hover:bg-primary-dark/30 transition-colors;
+}
+
+/* Hide default cursor */
+* {
+  cursor: none !important;
+}
+
+/* Ensure smooth cursor movement */
+body {
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Optional: Show default cursor on mobile devices */
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
 } 
