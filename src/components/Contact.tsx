@@ -179,6 +179,7 @@ const Contact: React.FC = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  autoComplete="name"
                   className="w-full px-4 py-2 rounded-lg border border-neutral dark:border-neutral-dark bg-white dark:bg-neutral-dark text-text-main dark:text-text-main-dark focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent transition-colors"
                 />
               </div>
@@ -196,6 +197,7 @@ const Contact: React.FC = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoComplete="email"
                   className="w-full px-4 py-2 rounded-lg border border-neutral dark:border-neutral-dark bg-white dark:bg-neutral-dark text-text-main dark:text-text-main-dark focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent transition-colors"
                 />
               </div>
@@ -213,6 +215,7 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   rows={4}
+                  autoComplete="off"
                   className="w-full px-4 py-2 rounded-lg border border-neutral dark:border-neutral-dark bg-white dark:bg-neutral-dark text-text-main dark:text-text-main-dark focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:border-transparent transition-colors"
                 />
               </div>

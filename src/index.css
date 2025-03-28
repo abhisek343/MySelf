@@ -35,20 +35,19 @@
   @apply bg-primary/20 dark:bg-primary-dark/20 rounded-full hover:bg-primary/30 dark:hover:bg-primary-dark/30 transition-colors;
 }
 
-/* Hide default cursor */
-* {
+/* Cursor handling */
+.custom-cursor-enabled * {
   cursor: none !important;
 }
 
 /* Ensure smooth cursor movement */
 body {
   overflow-x: hidden;
-  cursor: none;
 }
 
 /* Optional: Show default cursor on mobile devices */
 @media (max-width: 768px) {
-  * {
+  .custom-cursor-enabled * {
     cursor: auto !important;
   }
 } 

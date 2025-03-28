@@ -2,13 +2,29 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const HeroIllustration: React.FC = () => {
+  // Define safe animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Define safe transition values
+  const containerTransition = { duration: 0.5 };
+  const itemTransition = (delay: number) => ({ delay });
+
   return (
     <div className="relative w-full max-w-md mx-auto mt-12">
       <motion.div
         className="relative"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        transition={containerTransition}
       >
         {/* Code window frame */}
         <div className="bg-surface dark:bg-surface-dark rounded-lg shadow-xl overflow-hidden">
@@ -24,9 +40,10 @@ const HeroIllustration: React.FC = () => {
           {/* Code content */}
           <div className="p-6 font-mono text-sm">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={itemTransition(0.2)}
             >
               <span className="text-primary dark:text-primary-light">const</span>{' '}
               <span className="text-accent dark:text-accent-light">developer</span>{' '}
@@ -34,9 +51,10 @@ const HeroIllustration: React.FC = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={itemTransition(0.3)}
               className="ml-4"
             >
               <span className="text-secondary dark:text-secondary-light">name</span>:{' '}
@@ -44,9 +62,10 @@ const HeroIllustration: React.FC = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={itemTransition(0.4)}
               className="ml-4"
             >
               <span className="text-secondary dark:text-secondary-light">role</span>:{' '}
@@ -54,9 +73,10 @@ const HeroIllustration: React.FC = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={itemTransition(0.5)}
               className="ml-4"
             >
               <span className="text-secondary dark:text-secondary-light">passion</span>:{' '}
@@ -64,9 +84,10 @@ const HeroIllustration: React.FC = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+              variants={itemVariants}
+              initial="hidden"
+              animate="visible"
+              transition={itemTransition(0.6)}
             >
               {'}'}
             </motion.div>

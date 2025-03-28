@@ -1,115 +1,88 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-interface CursorState {
-  isHovering: boolean;
-  isClicking: boolean;
+interface Position {
+  x: number;
+  y: number;
 }
 
 const CustomCursor: React.FC = () => {
-  const [cursorState, setCursorState] = useState<CursorState>({
-    isHovering: false,
-    isClicking: false,
-  });
+  const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Create motion values for cursor position
-  const cursorX = useMotionValue(0);
-  const cursorY = useMotionValue(0);
-
-  // Smooth spring animation for cursor movement
-  const springConfig = { damping: 25, stiffness: 700 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
+  // Check if we're in a browser environment
+  const isBrowser = typeof window !== 'undefined';
 
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
+    setIsMounted(true);
+
+    // Only add event listeners if we're in a browser environment
+    if (!isBrowser) return;
+
+    const updatePosition = (e: MouseEvent) => {
+      // Ensure we have valid numbers
+      const x = typeof e.clientX === 'number' ? e.clientX : 0;
+      const y = typeof e.clientY === 'number' ? e.clientY : 0;
+      setPosition({ x, y });
     };
 
-    const handleMouseDown = () => {
-      setCursorState(prev => ({ ...prev, isClicking: true }));
-    };
-
-    const handleMouseUp = () => {
-      setCursorState(prev => ({ ...prev, isClicking: false }));
-    };
-
-    // Add event listeners
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-
-    // Add hover listeners to interactive elements
     const handleMouseEnter = () => {
-      setCursorState(prev => ({ ...prev, isHovering: true }));
+      setIsVisible(true);
+      if (document.body) {
+        document.body.classList.add('custom-cursor-enabled');
+      }
     };
 
     const handleMouseLeave = () => {
-      setCursorState(prev => ({ ...prev, isHovering: false }));
+      setIsVisible(false);
+      if (document.body) {
+        document.body.classList.remove('custom-cursor-enabled');
+      }
     };
 
-    // Add hover listeners to all interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, select, input, textarea');
-    interactiveElements.forEach(element => {
-      element.addEventListener('mouseenter', handleMouseEnter);
-      element.addEventListener('mouseleave', handleMouseLeave);
-    });
+    // Add event listeners
+    window.addEventListener('mousemove', updatePosition);
+    window.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseleave', handleMouseLeave);
 
-    // Cleanup
+    // Cleanup function
     return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      interactiveElements.forEach(element => {
-        element.removeEventListener('mouseenter', handleMouseEnter);
-        element.removeEventListener('mouseleave', handleMouseLeave);
-      });
+      window.removeEventListener('mousemove', updatePosition);
+      window.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      if (document.body) {
+        document.body.classList.remove('custom-cursor-enabled');
+      }
     };
-  }, [cursorX, cursorY]);
+  }, [isBrowser]);
 
-  const getScale = () => {
-    if (cursorState.isClicking) return 0.8;
-    if (cursorState.isHovering) return 1.5;
-    return 1;
-  };
+  // Don't render anything during SSR or if not mounted
+  if (!isMounted || !isBrowser) {
+    return null;
+  }
+
+  // Ensure we have valid numbers for animation
+  const safeX = typeof position.x === 'number' ? position.x - 8 : 0;
+  const safeY = typeof position.y === 'number' ? position.y - 8 : 0;
+  const safeOpacity = isVisible ? 1 : 0;
 
   return (
-    <>
-      {/* Main cursor */}
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-blue-600 rounded-full pointer-events-none z-50 mix-blend-difference"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-        }}
-        animate={{
-          scale: getScale(),
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-        }}
-      />
-
-      {/* Cursor ring */}
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border-2 border-blue-600 rounded-full pointer-events-none z-50 mix-blend-difference"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-        }}
-        animate={{
-          scale: getScale(),
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 250,
-          damping: 20,
-        }}
-      />
-    </>
+    <motion.div
+      className="fixed top-0 left-0 w-4 h-4 bg-primary dark:bg-primary-light rounded-full pointer-events-none z-50 mix-blend-difference"
+      animate={{
+        x: safeX,
+        y: safeY,
+      }}
+      transition={{
+        type: 'spring',
+        stiffness: 500,
+        damping: 28,
+      }}
+      style={{
+        opacity: safeOpacity,
+      }}
+    />
   );
 };
 

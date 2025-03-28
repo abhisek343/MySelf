@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { projectsData, Project } from '../data/projects';
 
@@ -55,6 +55,18 @@ const Projects: React.FC = () => {
     exit: { opacity: 0, y: -20 },
   };
 
+  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = '/images/placeholder.png';
+  }, []);
+
+  const handleTechChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTech(e.target.value);
+  }, []);
+
+  const handleSortChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortBy(e.target.value as 'date' | 'title');
+  }, []);
+
   return (
     <section id="projects" className="py-20 relative overflow-hidden">
       {/* Background gradient */}
@@ -85,12 +97,12 @@ const Projects: React.FC = () => {
             <select
               id="tech-filter"
               value={selectedTech}
-              onChange={(e) => setSelectedTech(e.target.value)}
+              onChange={handleTechChange}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Technologies</option>
               {technologies.map(tech => (
-                <option key={tech} value={tech}>{tech}</option>
+                <option key={`tech-${tech}`} value={tech}>{tech}</option>
               ))}
             </select>
           </div>
@@ -102,7 +114,7 @@ const Projects: React.FC = () => {
             <select
               id="sort-by"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'date' | 'title')}
+              onChange={handleSortChange}
               className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="date">Date (Newest First)</option>
@@ -118,14 +130,14 @@ const Projects: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="sync">
             {filteredProjects.map((project: Project) => (
               <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: project.id * 0.1 }}
+                key={`project-${project.id}`}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
                 className="group relative bg-surface dark:bg-surface-dark rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
               >
                 {/* Project Image */}
@@ -134,10 +146,7 @@ const Projects: React.FC = () => {
                     src={project.imageUrl}
                     alt={project.title}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = 'https://via.placeholder.com/400x300?text=Project+Image';
-                    }}
+                    onError={handleImageError}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
@@ -155,7 +164,7 @@ const Projects: React.FC = () => {
                   <div className="flex flex-wrap gap-2 mb-4">
                     {project.technologies.map((tech) => (
                       <span
-                        key={tech}
+                        key={`${project.id}-${tech}`}
                         className="px-3 py-1 bg-primary/10 dark:bg-primary-dark/10 text-primary dark:text-primary-light rounded-full text-sm"
                       >
                         {tech}
@@ -173,6 +182,7 @@ const Projects: React.FC = () => {
                         className="text-secondary dark:text-secondary-light hover:text-secondary-dark dark:hover:text-secondary-light transition-colors"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
                       >
                         Live Demo
                       </motion.a>
@@ -185,6 +195,7 @@ const Projects: React.FC = () => {
                         className="text-accent dark:text-accent-light hover:text-accent-dark dark:hover:text-accent-light transition-colors"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
                       >
                         GitHub
                       </motion.a>

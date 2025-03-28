@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -57,4 +57,22 @@ export default defineConfig({
       }
     })
   ],
+  server: {
+    port: 5173,
+    strictPort: true,
+    host: true
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'framer-motion': ['framer-motion']
+        }
+      }
+    }
+  }
 })
